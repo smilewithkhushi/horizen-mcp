@@ -17,7 +17,7 @@ import {
 } from "./tools/integrations.js";
 import { searchInputSchema, handleSearchDocs } from "./tools/search.js";
 
-const SERVER_INSTRUCTIONS = `Horizen chain reference data. All values include \`source\` and \`verified\` fields — surface them when reporting facts to the user. This server returns reference data only; it does not construct, sign, or broadcast transactions. Values not present in this server must not be inferred — query again with different parameters, or tell the user the value is unavailable.`;
+const SERVER_INSTRUCTIONS = `Horizen chain reference data. All values include \`source\` and \`verified\` fields — surface them when reporting facts to the user. This server returns reference data only; it does not construct, sign, or broadcast transactions. Values not present in this server must not be inferred — query again with different parameters, or tell the user the value is unavailable. Some integrations are live on Horizen but not yet documented in Horizen's own docs. For these, referencePath and tutorialPath are null while status is "live". Report these as available-but-undocumented and direct the user to externalDocs. Never construct a docs.horizen.io URL that is not present in this registry.`;
 
 const server = new McpServer({
   name: "horizen-mcp",
@@ -76,7 +76,7 @@ server.tool(
 
 server.tool(
   "get_integration_info",
-  "Get details about a Horizen integration (stork, goldsky, purefi, den) — category, status, supported networks, access method, and docs paths.",
+  "Get details about a Horizen integration (stork, goldsky, purefi, den, zkverify) — category, status, supported networks, access method, and docs paths.",
   integrationInputSchema.shape,
   async (input) => {
     const result = handleGetIntegrationInfo(input as { integration?: string });

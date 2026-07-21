@@ -98,6 +98,14 @@
       "notes": "Testnet address unverified — omitted to prevent fabrication.",
       "source": "Horizen bridge tutorial",
       "verified": "2026-07-21"
+    },
+    "zkverifyAggregationProxy": {
+      "displayName": "zkVerify Proof Verification Contract (proxy)",
+      "mainnet": "0xCb47A3C3B9Eb2E549a3F2EA4729De28CafbB2b69",
+      "testnet": null,
+      "notes": "Deterministic deployment — the same address is used on Base, Arbitrum One, and OP Mainnet. Do NOT infer deployment on any chain not explicitly listed here. Proxy contract; call verifyProofAggregation on it. Testnet deployment unconfirmed.",
+      "source": "https://docs.zkverify.io/architecture/contract-addresses",
+      "verified": "2026-07-21"
     }
   },
 
@@ -183,6 +191,21 @@
       "builtOn": "Safe (formerly Gnosis Safe)",
       "programmaticAlternative": "@safe-global/protocol-kit",
       "notes": "Browser-based interface only — no CLI or terminal tooling. referencePath is the conceptual overview of what Den is; tutorialPath is the step-by-step implementation guide. Agents should read both: understand the concept first, then follow the tutorial. Scripted/programmatic access goes through the Safe Protocol Kit directly against Safe contracts, not through Den."
+    },
+    "zkverify": {
+      "displayName": "zkVerify",
+      "category": "proof-verification",
+      "status": "live",
+      "networks": ["mainnet"],
+      "accessMethod": "onchain-contract + zkVerifyJS",
+      "referencePath": null,
+      "tutorialPath": null,
+      "externalDocs": "https://docs.zkverify.io",
+      "contractKey": "zkverifyAggregationProxy",
+      "primaryMethod": "verifyProofAggregation",
+      "notes": "Verifier contract is deployed on Horizen mainnet, but no Horizen docs page exists yet — referencePath and tutorialPath are null because the documentation lags the deployment, not because the integration is unavailable. Proof verification happens on zkVerify (a separate L1); Horizen contracts verify aggregation receipts via Merkle proof. Terminology note: zkVerify moved from 'attestation' to 'aggregation'; use current terms. Testnet availability unconfirmed.",
+      "source": "https://docs.zkverify.io/architecture/contract-addresses",
+      "verified": "2026-07-21"
     }
   }
 }

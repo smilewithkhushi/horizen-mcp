@@ -2,7 +2,7 @@ import { z } from "zod";
 import { getIntegration, getKnownIntegrationKeys } from "../registry.js";
 
 export const integrationInputSchema = z.object({
-  integration: z.enum(["stork", "goldsky", "purefi", "den"]).optional(),
+  integration: z.enum(["stork", "goldsky", "purefi", "den", "zkverify"]).optional(),
 });
 
 export function handleGetIntegrationInfo(input: { integration?: string }) {
@@ -18,13 +18,26 @@ export function handleGetIntegrationInfo(input: { integration?: string }) {
       };
     }
 
+    const referenceUrl = entry.referencePath
+      ? `https://docs.horizen.io${entry.referencePath}`
+      : null;
+    const tutorialUrl = entry.tutorialPath
+      ? `https://docs.horizen.io${entry.tutorialPath}`
+      : null;
+
     return {
       found: true,
       integration: input.integration,
       ...entry,
       docsBaseUrl: "https://docs.horizen.io",
-      referenceUrl: `https://docs.horizen.io${entry.referencePath}`,
-      tutorialUrl: `https://docs.horizen.io${entry.tutorialPath}`,
+      referenceUrl,
+      tutorialUrl,
+      ...(entry.referencePath === null && entry.status === "live"
+        ? {
+            documentationNote:
+              "This integration is live on Horizen but not yet documented in Horizen's own docs. Refer to externalDocs for integration guidance. Do not construct a docs.horizen.io URL for this integration.",
+          }
+        : {}),
     };
   }
 
@@ -39,8 +52,12 @@ export function handleGetIntegrationInfo(input: { integration?: string }) {
         status: entry.status,
         networks: entry.networks,
         accessMethod: entry.accessMethod,
-        referenceUrl: `https://docs.horizen.io${entry.referencePath}`,
-        tutorialUrl: `https://docs.horizen.io${entry.tutorialPath}`,
+        referenceUrl: entry.referencePath
+          ? `https://docs.horizen.io${entry.referencePath}`
+          : null,
+        tutorialUrl: entry.tutorialPath
+          ? `https://docs.horizen.io${entry.tutorialPath}`
+          : null,
       };
     }),
   };
