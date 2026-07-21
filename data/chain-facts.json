@@ -59,6 +59,38 @@
       "source": "https://docs.horizen.io/horizen-chain/integrations/purefi",
       "verified": "2026-07-21"
     },
+    "safeProxyFactory": {
+      "displayName": "Safe Proxy Factory",
+      "mainnet": null,
+      "testnet": null,
+      "notes": "Not present in the canonical Safe deployments registry (safe-global/safe-deployments) for chain 26514. Den uses Safe on Horizen but deployed outside the canonical process — do not fabricate addresses. Use Den UI at https://app.onchainden.com/ for multisig operations.",
+      "source": "https://github.com/safe-global/safe-deployments",
+      "verified": "2026-07-21"
+    },
+    "safeSingleton": {
+      "displayName": "Safe (Singleton)",
+      "mainnet": null,
+      "testnet": null,
+      "notes": "Not present in the canonical Safe deployments registry for chain 26514. See safeProxyFactory note.",
+      "source": "https://github.com/safe-global/safe-deployments",
+      "verified": "2026-07-21"
+    },
+    "safeMultiSendCallOnly": {
+      "displayName": "Safe MultiSendCallOnly",
+      "mainnet": null,
+      "testnet": null,
+      "notes": "Not present in the canonical Safe deployments registry for chain 26514. See safeProxyFactory note.",
+      "source": "https://github.com/safe-global/safe-deployments",
+      "verified": "2026-07-21"
+    },
+    "safeCompatibilityFallbackHandler": {
+      "displayName": "Safe CompatibilityFallbackHandler",
+      "mainnet": null,
+      "testnet": null,
+      "notes": "Not present in the canonical Safe deployments registry for chain 26514. See safeProxyFactory note.",
+      "source": "https://github.com/safe-global/safe-deployments",
+      "verified": "2026-07-21"
+    },
     "l1StandardBridge": {
       "displayName": "L1 Standard Bridge",
       "mainnet": "0xf4a6cc4171fda694439f856d912777aa6ab05369",
@@ -84,8 +116,9 @@
       "displayName": "Native Caldera Bridge",
       "mainnetUrl": "https://hub.horizen.io/",
       "testnetUrl": "https://hub-testnet.horizen.io/",
-      "supportedAssets": null,
-      "notes": "Distinct product from Stargate. Different token support and timing characteristics. Supported asset list unverified — omitted to prevent fabrication."
+      "supportedAssets": ["ETH"],
+      "route": "Horizen ↔ Base",
+      "notes": "Bridges ETH between Horizen and Base only. Distinct product from Stargate — different token support and timing characteristics."
     },
     "stargate": {
       "displayName": "Stargate (LayerZero OFT)",
@@ -136,7 +169,7 @@
       "tutorialPath": "/tutorials/integrations/integrate-purefi",
       "sdkVersion": "@purefi/sdk-solidity-v5@5.2.0",
       "dashboard": "https://dashboard.purefi.io/",
-      "notes": "Mainnet only — no documented testnet deployment. Contracts must be registered in the PureFi Dashboard before use. validatePayload is a synchronous blocking call; revert propagates to the caller."
+      "notes": "Mainnet only — no testnet deployment exists. Contracts must be registered in the PureFi Dashboard before use. validatePayload is a synchronous blocking call; revert propagates to the caller. referencePath is the integration overview; tutorialPath is the compliance-gating implementation guide."
     },
     "den": {
       "displayName": "Den (Multisig)",
@@ -146,9 +179,10 @@
       "accessMethod": "hosted-ui",
       "referencePath": "/horizen-chain/integrations/multisig",
       "tutorialPath": "/tutorials/integrations/setup-multisig",
+      "testnetFaucetUrl": "https://hub-testnet.horizen.io/",
       "builtOn": "Safe (formerly Gnosis Safe)",
       "programmaticAlternative": "@safe-global/protocol-kit",
-      "notes": "Browser-based interface only. No CLI or terminal tooling. Scripted access goes through the Safe Protocol Kit directly against Safe contracts, not through Den."
+      "notes": "Browser-based interface only — no CLI or terminal tooling. referencePath is the conceptual overview of what Den is; tutorialPath is the step-by-step implementation guide. Agents should read both: understand the concept first, then follow the tutorial. Scripted/programmatic access goes through the Safe Protocol Kit directly against Safe contracts, not through Den."
     }
   }
 }

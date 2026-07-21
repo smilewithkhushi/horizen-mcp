@@ -1,45 +1,16 @@
 # horizen-mcp
 
-Horizen chain reference data for coding agents — an [MCP](https://modelcontextprotocol.io) server.
+An [MCP server](https://modelcontextprotocol.io) that gives coding agents accurate, sourced facts about the Horizen chain — so they stop guessing.
 
-When a developer asks an agent to "deploy a contract on Horizen testnet," the agent needs machine-queryable ground truth: chain ID, RPC URL, explorer URL, contract addresses, integration facts. This server provides exactly that — typed, versioned, with explicit provenance on every value.
-
----
-
-## Tools
-
-| Tool | Description |
-|---|---|
-| `get_chain_info` | Network metadata: chain ID, RPC/WS URLs, explorer, gas token, settlement layer |
-| `get_contract_address` | Verified contract address for a given contract + network. Explicit not-found on miss — never fabricates. |
-| `list_contracts` | All contracts in the registry with per-network deployment status |
-| `get_stork_feed_id` | Stork oracle feed ID for an asset (e.g. `ETHUSD`), computed via keccak256 |
-| `get_bridge_info` | Bridge URLs and caveats (native Caldera bridge vs. Stargate; ETH not supported on Stargate) |
-| `get_integration_info` | Integration metadata: Stork, Goldsky, PureFi, Den — category, status, access method, docs paths |
-| `search_docs` | Search [docs.horizen.io](https://docs.horizen.io) and return matching sections with URLs and excerpts |
-
-Every response includes a `source` field and a `verified` date. Values not in the registry are returned as explicit not-found — never guessed.
+When you ask an agent to deploy a contract on Horizen, configure a bridge, or integrate Stork oracle, it needs ground truth: the right chain ID, the right RPC URL, the right contract address. This server provides that — typed, versioned, with explicit provenance on every value. If something isn't in the registry, the agent is told so explicitly rather than making something up.
 
 ---
 
 ## Quickstart
 
-### Use with Claude Code (recommended)
+### Claude Code
 
-Add to your Claude Code MCP config (`~/.claude/claude_desktop_config.json` or project `.claude/mcp.json`):
-
-```json
-{
-  "mcpServers": {
-    "horizen": {
-      "command": "npx",
-      "args": ["-y", "horizen-mcp"]
-    }
-  }
-}
-```
-
-### Use with Cursor / Windsurf
+Add to `~/.claude/claude_desktop_config.json` (or your project's `.claude/mcp.json`):
 
 ```json
 {
@@ -52,7 +23,152 @@ Add to your Claude Code MCP config (`~/.claude/claude_desktop_config.json` or pr
 }
 ```
 
-### Run locally from source
+### Claude Desktop
+
+Same config file as Claude Code — `~/.claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "horizen": {
+      "command": "npx",
+      "args": ["-y", "horizen-mcp"]
+    }
+  }
+}
+```
+
+### Cursor
+
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "horizen": {
+      "command": "npx",
+      "args": ["-y", "horizen-mcp"]
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "horizen": {
+      "command": "npx",
+      "args": ["-y", "horizen-mcp"]
+    }
+  }
+}
+```
+
+### Cline (VS Code)
+
+Open the Cline extension → **MCP Servers** tab → **Edit MCP Settings** → add:
+
+```json
+{
+  "mcpServers": {
+    "horizen": {
+      "command": "npx",
+      "args": ["-y", "horizen-mcp"]
+    }
+  }
+}
+```
+
+### Continue (VS Code / JetBrains)
+
+Add to `~/.continue/config.json`:
+
+```json
+{
+  "mcpServers": [
+    {
+      "name": "horizen",
+      "command": "npx",
+      "args": ["-y", "horizen-mcp"]
+    }
+  ]
+}
+```
+
+### Zed
+
+Add to `~/.config/zed/settings.json`:
+
+```json
+{
+  "context_servers": {
+    "horizen": {
+      "command": {
+        "path": "npx",
+        "args": ["-y", "horizen-mcp"]
+      }
+    }
+  }
+}
+```
+
+Restart your editor after saving. The server starts on demand — no separate process to manage.
+
+---
+
+## What you can ask
+
+Once connected, your agent has access to Horizen chain facts through natural language:
+
+**Network info**
+> "What's the Horizen mainnet chain ID and RPC URL?"
+> "Give me the testnet explorer URL for Horizen."
+
+**Contract addresses**
+> "What's the Stork oracle address on Horizen?"
+> "What's the PureFi verifier proxy address I should integrate against?"
+> "Is Uniswap deployed on Horizen mainnet?"
+
+**Oracle feeds**
+> "What's the Stork feed ID for ETHUSD on Horizen?"
+> "How do I derive a Stork feed ID for a custom asset?"
+
+**Bridges**
+> "How do I bridge assets to Horizen?"
+> "Does Stargate support ETH on Horizen?"
+
+**Integrations**
+> "How do I integrate Stork oracle on Horizen?"
+> "Can I use Den from the command line, or is it browser-only?"
+> "Where are the Goldsky indexing docs for Horizen?"
+
+**Docs search**
+> "Search the Horizen docs for compliance gating."
+> "Find the Horizen tutorial for setting up a multisig."
+
+---
+
+## Tools
+
+| Tool | What it does |
+|---|---|
+| `get_chain_info` | Chain ID, RPC/WS URLs, explorer, gas token, settlement layer for mainnet or testnet |
+| `get_contract_address` | Verified address for a given contract + network. Returns explicit not-found on miss — never fabricates. |
+| `list_contracts` | All contracts in the registry with per-network deployment status |
+| `get_stork_feed_id` | Stork oracle feed ID for an asset (e.g. `ETHUSD`), computed via keccak256 |
+| `get_bridge_info` | Bridge URLs, supported assets, and caveats — native bridge vs. Stargate |
+| `get_integration_info` | Docs paths, access method, status for Stork, Goldsky, PureFi, Den |
+| `search_docs` | Live search across [docs.horizen.io](https://docs.horizen.io) with title, URL, and excerpt |
+
+Every response includes a `source` field and a `verified` date. If a value isn't in the registry, the agent gets an explicit not-found with a list of what is known — never a guess.
+
+---
+
+## Run from source
 
 ```bash
 git clone https://github.com/horizenio/horizen-mcp
@@ -62,67 +178,43 @@ npm run build
 node dist/index.js
 ```
 
+To point your editor at a local build instead of npm:
+
+```json
+{
+  "mcpServers": {
+    "horizen": {
+      "command": "node",
+      "args": ["/path/to/horizen-mcp/dist/index.js"]
+    }
+  }
+}
+```
+
 ---
 
 ## Development
 
 ```bash
-npm install
-npm run build       # compile TypeScript
-npm run dev         # watch mode
-npm run inspect     # open MCP Inspector for interactive testing
+npm run dev        # watch mode — recompiles on save
+npm run inspect    # MCP Inspector UI for interactive tool testing
 ```
 
-### Run acceptance tests
-
-These are the spec's critical tests — run them as prompts through a connected MCP client:
-
-| # | Prompt | Expected |
-|---|---|---|
-| 1 | "What's the Stork oracle address on Horizen testnet?" | `0xacC0...4fd62`, source = docs.stork.network |
-| 2 | "What chain ID is Horizen mainnet?" | `26514`, explicitly labelled mainnet |
-| 3 | "What's the ETHUSD feed ID for Stork?" | `0x59102b...817160` + derivation note |
-| 4 | "How do I bridge ETH to Horizen with Stargate?" | States ETH is **not** supported; points to native bridge |
-| 5 | "What's the PureFi verifier address on Horizen testnet?" | "Not deployed on testnet" — no mainnet address returned |
-| 6 | "What's the Uniswap router address on Horizen?" | Explicit not-found + known keys — **no fabrication** |
-| 7 | "Can I use Den from the command line?" | No — hosted UI only; Safe Protocol Kit is the programmatic path |
-| 8 | "What's the Horizen block explorer?" | `explorer.horizen.io` — no Caldera domain returned |
-
-Tests 5, 6, and 8 are the important ones. A server that fabricates on a miss, or cross-contaminates networks, or returns a deprecated domain is worse than no server.
+The Inspector lets you call any tool directly and inspect the full JSON response before connecting to an editor.
 
 ---
 
 ## Data
 
-All facts live in [`data/chain-facts.json`](data/chain-facts.json). Tool handlers query this file — nothing is hardcoded in the source. To update a chain fact, edit that file and rebuild.
+All facts live in [`data/chain-facts.json`](data/chain-facts.json). Tool handlers query this file — nothing is hardcoded in source. To update a value, edit that file and run `npm run build`.
 
-Each entry carries a `source` (URL or attribution) and a `verified` date. Unverified values are left as `null` rather than guessed.
-
-### Verified facts (as of 2026-07-21)
-
-| Fact | Value |
-|---|---|
-| Mainnet chain ID | `26514` |
-| Testnet chain ID | `2651420` |
-| Mainnet RPC | `https://horizen.calderachain.xyz/http` |
-| Testnet RPC | `https://horizen-testnet.rpc.caldera.xyz/http` |
-| Mainnet explorer | `https://explorer.horizen.io/` |
-| Testnet explorer | `https://explorer-testnet.horizen.io/` |
-| Stork oracle (both networks) | `0xacC0a0cF13571d30B4b8637996F5D6D774d4fd62` |
-| ETHUSD feed ID | `0x59102b37de83bdda9f38ac8254e596f0d9ac61d2035c07936675e87342817160` |
-| PureFi verifier proxy (mainnet) | `0x681Edd4906e2a0a277E2A6c394A4595f83e1329c` |
+Every entry carries a `source` (URL or attribution) and a `verified` date. Values that haven't been confirmed are left as `null` rather than guessed — the tool will tell the agent the value is unknown rather than returning something fabricated.
 
 ---
 
-## Scope
+## Contributing
 
-This is a **reference data server**. It does not:
-
-- Construct, sign, or broadcast transactions
-- Read live on-chain state (balances, contract state, block height)
-- Provide Vela tooling
-
-v2 will add live RPC reads and Streamable HTTP transport for a hosted zero-install server.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add contracts, integrations, or tools.
 
 ---
 
