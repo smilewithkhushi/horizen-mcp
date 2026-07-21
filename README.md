@@ -1,8 +1,10 @@
 # horizen-mcp
 
+[![npm](https://img.shields.io/npm/v/horizen-mcp)](https://www.npmjs.com/package/horizen-mcp)
+
 An [MCP server](https://modelcontextprotocol.io) that gives coding agents accurate, sourced facts about the Horizen chain — so they stop guessing.
 
-When you ask an agent to deploy a contract on Horizen, configure a bridge, or integrate Stork oracle, it needs ground truth: the right chain ID, the right RPC URL, the right contract address. This server provides that — typed, versioned, with explicit provenance on every value. If something isn't in the registry, the agent is told so explicitly rather than making something up.
+When you ask an agent to deploy a contract on Horizen, configure a bridge, or integrate Stork oracle or zkVerify, it needs ground truth: the right chain ID, the right RPC URL, the right contract address. This server provides that — typed, versioned, with explicit provenance on every value. If something isn't in the registry, the agent is told so explicitly rather than making something up.
 
 ---
 
@@ -145,6 +147,8 @@ Once connected, your agent has access to Horizen chain facts through natural lan
 > "How do I integrate Stork oracle on Horizen?"
 > "Can I use Den from the command line, or is it browser-only?"
 > "Where are the Goldsky indexing docs for Horizen?"
+> "Can I use zkVerify with Horizen? What's the contract address?"
+> "What's the zkVerify verifier address on Horizen testnet?"
 
 **Docs search**
 > "Search the Horizen docs for compliance gating."
@@ -161,7 +165,7 @@ Once connected, your agent has access to Horizen chain facts through natural lan
 | `list_contracts` | All contracts in the registry with per-network deployment status |
 | `get_stork_feed_id` | Stork oracle feed ID for an asset (e.g. `ETHUSD`), computed via keccak256 |
 | `get_bridge_info` | Bridge URLs, supported assets, and caveats — native bridge vs. Stargate |
-| `get_integration_info` | Docs paths, access method, status for Stork, Goldsky, PureFi, Den |
+| `get_integration_info` | Docs paths, access method, status for Stork, Goldsky, PureFi, Den, zkVerify |
 | `search_docs` | Live search across [docs.horizen.io](https://docs.horizen.io) with title, URL, and excerpt |
 
 Every response includes a `source` field and a `verified` date. If a value isn't in the registry, the agent gets an explicit not-found with a list of what is known — never a guess.
