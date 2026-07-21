@@ -1,0 +1,20 @@
+# memory (local only)
+/memory
+
+# dependencies
+node_modules/
+
+# build output
+dist/
+
+# environment
+.env
+.env.local
+
+# OS
+.DS_Store
+
+# editor
+.vscode/
+.idea/
+*.swp

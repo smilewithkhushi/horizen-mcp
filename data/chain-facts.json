@@ -1,0 +1,154 @@
+{
+  "schemaVersion": "1.0.0",
+  "lastVerified": "2026-07-21",
+
+  "networks": {
+    "mainnet": {
+      "name": "Horizen Mainnet",
+      "chainId": 26514,
+      "rpcUrl": "https://horizen.calderachain.xyz/http",
+      "rpcUrlWs": "wss://horizen.calderachain.xyz/ws",
+      "explorerUrl": "https://explorer.horizen.io/",
+      "hubUrl": "https://hub.horizen.io/",
+      "currencySymbol": "ETH",
+      "gasToken": "ETH",
+      "settlementLayer": "Base",
+      "stack": "OP Stack",
+      "source": "Horizen network configuration docs",
+      "verified": "2026-07-21"
+    },
+    "testnet": {
+      "name": "Horizen Testnet",
+      "chainId": 2651420,
+      "rpcUrl": "https://horizen-testnet.rpc.caldera.xyz/http",
+      "rpcUrlWs": "wss://horizen-testnet.rpc.caldera.xyz/ws",
+      "explorerUrl": "https://explorer-testnet.horizen.io/",
+      "hubUrl": "https://hub-testnet.horizen.io/",
+      "faucetUrl": "https://hub-testnet.horizen.io/",
+      "currencySymbol": "ETH",
+      "gasToken": "ETH",
+      "settlementLayer": "Base Sepolia",
+      "stack": "OP Stack",
+      "source": "Horizen network configuration docs",
+      "verified": "2026-07-21"
+    }
+  },
+
+  "contracts": {
+    "stork": {
+      "displayName": "Stork Oracle",
+      "mainnet": "0xacC0a0cF13571d30B4b8637996F5D6D774d4fd62",
+      "testnet": "0xacC0a0cF13571d30B4b8637996F5D6D774d4fd62",
+      "notes": "Same address on both networks.",
+      "source": "https://docs.stork.network/resources/contract-addresses/evm",
+      "verified": "2026-07-21"
+    },
+    "purefiVerifierProxy": {
+      "displayName": "PureFi Verifier (proxy)",
+      "mainnet": "0x681Edd4906e2a0a277E2A6c394A4595f83e1329c",
+      "testnet": null,
+      "notes": "Integrate against this address, not the implementation. No testnet deployment documented.",
+      "source": "https://docs.horizen.io/horizen-chain/integrations/purefi",
+      "verified": "2026-07-21"
+    },
+    "purefiVerifierImpl": {
+      "displayName": "PureFi Verifier (implementation)",
+      "mainnet": "0x61C468B554B6F0b0842242F7Df079bb392EE0555",
+      "testnet": null,
+      "notes": "Proxy delegatecalls here. Do not call directly.",
+      "source": "https://docs.horizen.io/horizen-chain/integrations/purefi",
+      "verified": "2026-07-21"
+    },
+    "l1StandardBridge": {
+      "displayName": "L1 Standard Bridge",
+      "mainnet": "0xf4a6cc4171fda694439f856d912777aa6ab05369",
+      "testnet": null,
+      "notes": "Testnet address unverified — omitted to prevent fabrication.",
+      "source": "Horizen bridge tutorial",
+      "verified": "2026-07-21"
+    }
+  },
+
+  "feeds": {
+    "_note": "Stork feed IDs are keccak256(assetID). Derive with: cast keccak \"ETHUSD\"",
+    "ETHUSD": {
+      "id": "0x59102b37de83bdda9f38ac8254e596f0d9ac61d2035c07936675e87342817160",
+      "derivation": "keccak256(\"ETHUSD\")",
+      "source": "Stork team confirmation, July 2026",
+      "verified": "2026-07-21"
+    }
+  },
+
+  "bridges": {
+    "native": {
+      "displayName": "Native Caldera Bridge",
+      "mainnetUrl": "https://hub.horizen.io/",
+      "testnetUrl": "https://hub-testnet.horizen.io/",
+      "supportedAssets": null,
+      "notes": "Distinct product from Stargate. Different token support and timing characteristics. Supported asset list unverified — omitted to prevent fabrication."
+    },
+    "stargate": {
+      "displayName": "Stargate (LayerZero OFT)",
+      "zenDeepLink": "https://stargate.finance/?srcChain=base&srcToken=0xf43eB8De897Fbc7F2502483B2Bef7Bb9EA179229&dstChain=horizen&dstToken=0x57da2D504bf8b83Ef304759d9f2648522D7a9280",
+      "supportedAssets": ["ZEN"],
+      "notes": "ETH is NOT supported via Stargate on Horizen. Refer to the product as 'Stargate', never 'Stargate V2'."
+    }
+  },
+
+  "layerZeroEids": {
+    "base": 30184,
+    "baseSepolia": 40245,
+    "horizenMainnet": 30399,
+    "horizenTestnet": 40435
+  },
+
+  "integrations": {
+    "stork": {
+      "displayName": "Stork Oracle",
+      "category": "oracle",
+      "type": "pull",
+      "status": "live",
+      "networks": ["mainnet", "testnet"],
+      "accessMethod": "rest-api + onchain",
+      "referencePath": "/horizen-chain/integrations/stork-oracle",
+      "tutorialPath": "/tutorials/integrations/connect-stork-oracle",
+      "externalDocs": "https://docs.stork.network",
+      "notes": "Pull oracle — your contract calls updateTemporalNumericValueV1 to push a fresh price on-chain before reading it."
+    },
+    "goldsky": {
+      "displayName": "Goldsky",
+      "category": "indexer",
+      "status": "live",
+      "networks": ["mainnet", "testnet"],
+      "accessMethod": "cli",
+      "referencePath": "/horizen-chain/integrations/goldsky",
+      "tutorialPath": "/tutorials/integrations/index-with-goldsky",
+      "externalDocs": "https://docs.goldsky.com",
+      "notes": "Cross-check against official Goldsky docs as the reference point."
+    },
+    "purefi": {
+      "displayName": "PureFi",
+      "category": "compliance",
+      "status": "live",
+      "networks": ["mainnet"],
+      "accessMethod": "solidity-sdk + dashboard",
+      "referencePath": "/horizen-chain/integrations/purefi",
+      "tutorialPath": "/tutorials/integrations/integrate-purefi",
+      "sdkVersion": "@purefi/sdk-solidity-v5@5.2.0",
+      "dashboard": "https://dashboard.purefi.io/",
+      "notes": "Mainnet only — no documented testnet deployment. Contracts must be registered in the PureFi Dashboard before use. validatePayload is a synchronous blocking call; revert propagates to the caller."
+    },
+    "den": {
+      "displayName": "Den (Multisig)",
+      "category": "multisig",
+      "status": "live",
+      "networks": ["mainnet", "testnet"],
+      "accessMethod": "hosted-ui",
+      "referencePath": "/horizen-chain/integrations/multisig",
+      "tutorialPath": "/tutorials/integrations/setup-multisig",
+      "builtOn": "Safe (formerly Gnosis Safe)",
+      "programmaticAlternative": "@safe-global/protocol-kit",
+      "notes": "Browser-based interface only. No CLI or terminal tooling. Scripted access goes through the Safe Protocol Kit directly against Safe contracts, not through Den."
+    }
+  }
+}
