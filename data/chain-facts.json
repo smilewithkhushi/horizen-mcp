@@ -102,10 +102,12 @@
     "zkverifyAggregationProxy": {
       "displayName": "zkVerify Proof Verification Contract (proxy)",
       "mainnet": "0xCb47A3C3B9Eb2E549a3F2EA4729De28CafbB2b69",
-      "testnet": null,
-      "notes": "Deterministic deployment — the same address is used on Base, Arbitrum One, and OP Mainnet. Do NOT infer deployment on any chain not explicitly listed here. Proxy contract; call verifyProofAggregation on it. Testnet deployment unconfirmed.",
+      "testnet": "0x3098A6974649478f0133046e44105AA84e868C21",
+      "horizenMainnetDomainId": 3,
+      "horizenTestnetDomainId": 175,
+      "notes": "Mainnet address is deterministic — same on Base (8453), Arbitrum One (42161), OP Mainnet (10), and Horizen (26514). Testnet address differs per chain. Domain ID 3 targets Horizen mainnet; domain ID 175 targets Horizen testnet. Primary function: verifyProofAggregation(domainId, aggregationId, leaf, merklePath, leafCount, index). Storage mapping: proofsAggregations(domainId, aggregationId) → bytes32 merkleRoot. Do NOT infer deployment on chains not explicitly listed in this entry.",
       "source": "https://docs.zkverify.io/architecture/contract-addresses",
-      "verified": "2026-07-21"
+      "verified": "2026-08-05"
     }
   },
 
@@ -196,16 +198,16 @@
       "displayName": "zkVerify",
       "category": "proof-verification",
       "status": "live",
-      "networks": ["mainnet"],
+      "networks": ["mainnet", "testnet"],
       "accessMethod": "onchain-contract + zkVerifyJS",
       "referencePath": null,
       "tutorialPath": null,
       "externalDocs": "https://docs.zkverify.io",
       "contractKey": "zkverifyAggregationProxy",
       "primaryMethod": "verifyProofAggregation",
-      "notes": "Verifier contract is deployed on Horizen mainnet, but no Horizen docs page exists yet — referencePath and tutorialPath are null because the documentation lags the deployment, not because the integration is unavailable. Proof verification happens on zkVerify (a separate L1); Horizen contracts verify aggregation receipts via Merkle proof. Terminology note: zkVerify moved from 'attestation' to 'aggregation'; use current terms. Testnet availability unconfirmed.",
+      "notes": "Verifier contract is deployed on both Horizen mainnet and testnet (different addresses — see zkverifyAggregationProxy contract entry). No Horizen docs page exists yet — referencePath and tutorialPath are null because documentation lags the deployment. Proof verification happens on zkVerify (a separate L1); Horizen contracts verify aggregation receipts via Merkle proof. Horizen mainnet domain ID: 3. Horizen testnet domain ID: 175. verifyProofAggregation takes 6 params: domainId, aggregationId, leaf, merklePath, leafCount, index. Storage mapping proofsAggregations(domainId, aggregationId) → bytes32 merkleRoot for existence checks. Terminology: zkVerify moved from 'attestation' to 'aggregation' — use current terms.",
       "source": "https://docs.zkverify.io/architecture/contract-addresses",
-      "verified": "2026-07-21"
+      "verified": "2026-08-05"
     }
   }
 }
