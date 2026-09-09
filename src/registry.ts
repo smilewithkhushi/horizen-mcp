@@ -30,6 +30,14 @@ export function getKnownFeedIds(): string[] {
   return Object.keys(data.feeds).filter((k) => k !== "_note");
 }
 
+export function getToken(key: string) {
+  return data.tokens[key] ?? null;
+}
+
+export function getKnownTokenKeys(): string[] {
+  return Object.keys(data.tokens);
+}
+
 export function getBridge(key: string) {
   return data.bridges[key] ?? null;
 }

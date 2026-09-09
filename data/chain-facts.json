@@ -1,7 +1,6 @@
 {
-  "schemaVersion": "1.0.0",
-  "lastVerified": "2026-07-21",
-
+  "schemaVersion": "1.1.0",
+  "lastVerified": "2026-09-07",
   "networks": {
     "mainnet": {
       "name": "Horizen Mainnet",
@@ -33,7 +32,6 @@
       "verified": "2026-07-21"
     }
   },
-
   "contracts": {
     "stork": {
       "displayName": "Stork Oracle",
@@ -63,7 +61,7 @@
       "displayName": "Safe Proxy Factory",
       "mainnet": null,
       "testnet": null,
-      "notes": "Not present in the canonical Safe deployments registry (safe-global/safe-deployments) for chain 26514. Den uses Safe on Horizen but deployed outside the canonical process — do not fabricate addresses. Use Den UI at https://app.onchainden.com/ for multisig operations.",
+      "notes": "Not present in the canonical Safe deployments registry (safe-global/safe-deployments) for chain 26514. Den uses Safe on Horizen but deployed outside the canonical process \u2014 do not fabricate addresses. Use Den UI at https://app.onchainden.com/ for multisig operations.",
       "source": "https://github.com/safe-global/safe-deployments",
       "verified": "2026-07-21"
     },
@@ -95,7 +93,7 @@
       "displayName": "L1 Standard Bridge",
       "mainnet": "0xf4a6cc4171fda694439f856d912777aa6ab05369",
       "testnet": null,
-      "notes": "Testnet address unverified — omitted to prevent fabrication.",
+      "notes": "Testnet address unverified \u2014 omitted to prevent fabrication.",
       "source": "Horizen bridge tutorial",
       "verified": "2026-07-21"
     },
@@ -105,12 +103,101 @@
       "testnet": "0x3098A6974649478f0133046e44105AA84e868C21",
       "horizenMainnetDomainId": 3,
       "horizenTestnetDomainId": 175,
-      "notes": "Mainnet address is deterministic — same on Base (8453), Arbitrum One (42161), OP Mainnet (10), and Horizen (26514). Testnet address differs per chain. Domain ID 3 targets Horizen mainnet; domain ID 175 targets Horizen testnet. Primary function: verifyProofAggregation(domainId, aggregationId, leaf, merklePath, leafCount, index). Storage mapping: proofsAggregations(domainId, aggregationId) → bytes32 merkleRoot. Do NOT infer deployment on chains not explicitly listed in this entry.",
+      "notes": "Mainnet address is deterministic \u2014 same on Base (8453), Arbitrum One (42161), OP Mainnet (10), and Horizen (26514). Testnet address differs per chain. Domain ID 3 targets Horizen mainnet; domain ID 175 targets Horizen testnet. Primary function: verifyProofAggregation(domainId, aggregationId, leaf, merklePath, leafCount, index). Storage mapping: proofsAggregations(domainId, aggregationId) \u2192 bytes32 merkleRoot. Do NOT infer deployment on chains not explicitly listed in this entry.",
       "source": "https://docs.zkverify.io/architecture/contract-addresses",
       "verified": "2026-08-05"
+    },
+    "zenToken": {
+      "displayName": "ZEN Token (OFT on Horizen)",
+      "mainnet": "0x57da2D504bf8b83Ef304759d9f2648522D7a9280",
+      "testnet": "0xb06EC4ce262D8dbDc24Fac87479A49A7DC4cFb87",
+      "notes": "ZEN is the governance and value-routing token of the Horizen ecosystem. On Horizen the ERC-20 and OFT contract share the same address. Origin chain is Base \u2014 mainnet Base ERC-20: 0xf43eB8De897Fbc7F2502483B2Bef7Bb9EA179229; Base OFT Adapter: 0x57da2D504bf8b83Ef304759d9f2648522D7a9280. ZEN is NOT the gas token \u2014 gas is paid in ETH. Testnet token is tZEN on Base Sepolia: 0x107fdE93838e3404934877935993782F977324BB.",
+      "source": "https://docs.horizen.io/horizen-chain/tokens-and-gas/zen-token",
+      "verified": "2026-09-07"
+    },
+    "cbtcToken": {
+      "displayName": "cbBTC Token (OFT on Horizen)",
+      "mainnet": "0x68fb5BB8330C0b9d907F50f278143873276ee056",
+      "testnet": "0x06DA6bDD2aB23447af5162ab0975edDA7E8d3747",
+      "notes": "Coinbase-custodied Bitcoin bridged via LayerZero OFT. Decimals: 8 (NOT 18 \u2014 using 18-decimal assumptions breaks integrations). On Horizen the ERC-20 and OFT contract share the same address. Base cbBTC ERC-20: 0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf; Base OFT Adapter: 0x68fb5BB8330C0b9d907F50f278143873276ee056. 1:1 backed by BTC held by Coinbase.",
+      "source": "https://docs.horizen.io/horizen-chain/tokens-and-gas/cbtc",
+      "verified": "2026-09-07"
+    },
+    "usdceToken": {
+      "displayName": "USDC.e Token (bridged USDC on Horizen)",
+      "mainnet": "0xDF7108f8B10F9b9eC1aba01CCa057268cbf86B6c",
+      "testnet": null,
+      "notes": "Bridged USDC via Stargate Hydra \u2014 the .e suffix denotes bridged (not native Circle-issued) USDC. Decimals: 6 (NOT 18). ERC-20 and OFT use SEPARATE addresses on Horizen \u2014 use the ERC-20 address (this entry) for dApp integration. OFT contract (bridge mechanism only): 0x3a1293Bdb83bBbDd5Ebf4fAc96605aD2021BbC0f. Base USDC (Circle): 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913. No testnet deployment. Contract address unchanged if upgraded to native USDC.",
+      "source": "https://docs.horizen.io/horizen-chain/tokens-and-gas/usdc",
+      "verified": "2026-09-07"
     }
   },
-
+  "tokens": {
+    "zen": {
+      "displayName": "ZEN Token",
+      "symbol": "ZEN",
+      "decimals": 18,
+      "role": "governance and value-routing token \u2014 NOT the gas token (gas is ETH)",
+      "bridge": "LayerZero OFT",
+      "mainnet": {
+        "horizen": "0x57da2D504bf8b83Ef304759d9f2648522D7a9280",
+        "horizenNote": "ERC-20 and OFT share the same address on Horizen",
+        "base": "0xf43eB8De897Fbc7F2502483B2Bef7Bb9EA179229",
+        "baseOftAdapter": "0x57da2D504bf8b83Ef304759d9f2648522D7a9280"
+      },
+      "testnet": {
+        "horizen": "0xb06EC4ce262D8dbDc24Fac87479A49A7DC4cFb87",
+        "horizenNote": "tZEN on Horizen testnet",
+        "baseSepolia": "0x107fdE93838e3404934877935993782F977324BB",
+        "baseSepoliaOftAdapter": "0x2ead4B0beBD8e54F9B7cC1007DF4c44a27b9a339"
+      },
+      "source": "https://docs.horizen.io/horizen-chain/tokens-and-gas/zen-token",
+      "verified": "2026-09-07"
+    },
+    "cbtc": {
+      "displayName": "cbBTC (Coinbase Bitcoin)",
+      "symbol": "cbBTC",
+      "decimals": 8,
+      "decimalsWarning": "CRITICAL: decimals are 8, NOT 18. Using 18-decimal assumptions silently produces wrong values.",
+      "role": "Coinbase-custodied Bitcoin, 1:1 backed",
+      "bridge": "LayerZero OFT",
+      "mainnet": {
+        "horizen": "0x68fb5BB8330C0b9d907F50f278143873276ee056",
+        "horizenNote": "ERC-20 and OFT share the same address on Horizen",
+        "base": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+        "baseOftAdapter": "0x68fb5BB8330C0b9d907F50f278143873276ee056"
+      },
+      "testnet": {
+        "horizen": "0x06DA6bDD2aB23447af5162ab0975edDA7E8d3747",
+        "baseSepolia": "0xcbb7c0006f23900c38eb856149f799620fcb8a4a",
+        "baseSepoliaOftAdapter": "0x5dE29d14E72feb79967596F3Ae57A9BfBA192769"
+      },
+      "source": "https://docs.horizen.io/horizen-chain/tokens-and-gas/cbtc",
+      "verified": "2026-09-07"
+    },
+    "usdce": {
+      "displayName": "USDC.e (Bridged USDC)",
+      "symbol": "USDC.e",
+      "decimals": 6,
+      "decimalsWarning": "CRITICAL: decimals are 6, NOT 18.",
+      "role": "Bridged USDC via Stargate Hydra \u2014 not native Circle-issued USDC. The .e suffix denotes bridged origin.",
+      "bridge": "Stargate Hydra (LayerZero)",
+      "upgradeNote": "Contract address unchanged if upgraded to native USDC.",
+      "mainnet": {
+        "horizen": "0xDF7108f8B10F9b9eC1aba01CCa057268cbf86B6c",
+        "horizenNote": "ERC-20 address \u2014 use this for dApp integration",
+        "horizenOft": "0x3a1293Bdb83bBbDd5Ebf4fAc96605aD2021BbC0f",
+        "horizenOftNote": "OFT is the bridge mechanism only \u2014 do NOT use for ERC-20 operations",
+        "base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "baseNote": "Canonical USDC on Base (Circle)",
+        "baseStargatePool": "0x27a16dc786820B16E5c9028b75B99F6f604b5d26"
+      },
+      "testnet": null,
+      "testnetNote": "No testnet deployment exists.",
+      "source": "https://docs.horizen.io/horizen-chain/tokens-and-gas/usdc",
+      "verified": "2026-09-07"
+    }
+  },
   "feeds": {
     "_note": "Stork feed IDs are keccak256(assetID). Derive with: cast keccak \"ETHUSD\"",
     "ETHUSD": {
@@ -120,49 +207,56 @@
       "verified": "2026-07-21"
     }
   },
-
   "bridges": {
     "native": {
       "displayName": "Native Caldera Bridge",
       "mainnetUrl": "https://hub.horizen.io/",
       "testnetUrl": "https://hub-testnet.horizen.io/",
-      "supportedAssets": ["ETH"],
-      "route": "Horizen ↔ Base",
-      "notes": "Bridges ETH between Horizen and Base only. Distinct product from Stargate — different token support and timing characteristics."
+      "supportedAssets": [
+        "ETH"
+      ],
+      "route": "Horizen \u2194 Base",
+      "notes": "Bridges ETH between Horizen and Base only. Distinct product from Stargate \u2014 different token support and timing characteristics."
     },
     "stargate": {
       "displayName": "Stargate (LayerZero OFT)",
       "zenDeepLink": "https://stargate.finance/?srcChain=base&srcToken=0xf43eB8De897Fbc7F2502483B2Bef7Bb9EA179229&dstChain=horizen&dstToken=0x57da2D504bf8b83Ef304759d9f2648522D7a9280",
-      "supportedAssets": ["ZEN"],
+      "supportedAssets": [
+        "ZEN"
+      ],
       "notes": "ETH is NOT supported via Stargate on Horizen. Refer to the product as 'Stargate', never 'Stargate V2'."
     }
   },
-
   "layerZeroEids": {
     "base": 30184,
     "baseSepolia": 40245,
     "horizenMainnet": 30399,
     "horizenTestnet": 40435
   },
-
   "integrations": {
     "stork": {
       "displayName": "Stork Oracle",
       "category": "oracle",
       "type": "pull",
       "status": "live",
-      "networks": ["mainnet", "testnet"],
+      "networks": [
+        "mainnet",
+        "testnet"
+      ],
       "accessMethod": "rest-api + onchain",
       "referencePath": "/horizen-chain/integrations/stork-oracle",
       "tutorialPath": "/tutorials/integrations/connect-stork-oracle",
       "externalDocs": "https://docs.stork.network",
-      "notes": "Pull oracle — your contract calls updateTemporalNumericValueV1 to push a fresh price on-chain before reading it."
+      "notes": "Pull oracle \u2014 your contract calls updateTemporalNumericValueV1 to push a fresh price on-chain before reading it."
     },
     "goldsky": {
       "displayName": "Goldsky",
       "category": "indexer",
       "status": "live",
-      "networks": ["mainnet", "testnet"],
+      "networks": [
+        "mainnet",
+        "testnet"
+      ],
       "accessMethod": "cli",
       "referencePath": "/horizen-chain/integrations/goldsky",
       "tutorialPath": "/tutorials/integrations/index-with-goldsky",
@@ -173,39 +267,47 @@
       "displayName": "PureFi",
       "category": "compliance",
       "status": "live",
-      "networks": ["mainnet"],
+      "networks": [
+        "mainnet"
+      ],
       "accessMethod": "solidity-sdk + dashboard",
       "referencePath": "/horizen-chain/integrations/purefi",
       "tutorialPath": "/tutorials/integrations/integrate-purefi",
       "sdkVersion": "@purefi/sdk-solidity-v5@5.2.0",
       "dashboard": "https://dashboard.purefi.io/",
-      "notes": "Mainnet only — no testnet deployment exists. Contracts must be registered in the PureFi Dashboard before use. validatePayload is a synchronous blocking call; revert propagates to the caller. referencePath is the integration overview; tutorialPath is the compliance-gating implementation guide."
+      "notes": "Mainnet only \u2014 no testnet deployment exists. Contracts must be registered in the PureFi Dashboard before use. validatePayload is a synchronous blocking call; revert propagates to the caller. referencePath is the integration overview; tutorialPath is the compliance-gating implementation guide."
     },
     "den": {
       "displayName": "Den (Multisig)",
       "category": "multisig",
       "status": "live",
-      "networks": ["mainnet", "testnet"],
+      "networks": [
+        "mainnet",
+        "testnet"
+      ],
       "accessMethod": "hosted-ui",
       "referencePath": "/horizen-chain/integrations/multisig",
       "tutorialPath": "/tutorials/integrations/setup-multisig",
       "testnetFaucetUrl": "https://hub-testnet.horizen.io/",
       "builtOn": "Safe (formerly Gnosis Safe)",
       "programmaticAlternative": "@safe-global/protocol-kit",
-      "notes": "Browser-based interface only — no CLI or terminal tooling. referencePath is the conceptual overview of what Den is; tutorialPath is the step-by-step implementation guide. Agents should read both: understand the concept first, then follow the tutorial. Scripted/programmatic access goes through the Safe Protocol Kit directly against Safe contracts, not through Den."
+      "notes": "Browser-based interface only \u2014 no CLI or terminal tooling. referencePath is the conceptual overview of what Den is; tutorialPath is the step-by-step implementation guide. Agents should read both: understand the concept first, then follow the tutorial. Scripted/programmatic access goes through the Safe Protocol Kit directly against Safe contracts, not through Den."
     },
     "zkverify": {
       "displayName": "zkVerify",
       "category": "proof-verification",
       "status": "live",
-      "networks": ["mainnet", "testnet"],
+      "networks": [
+        "mainnet",
+        "testnet"
+      ],
       "accessMethod": "onchain-contract + zkVerifyJS",
       "referencePath": null,
       "tutorialPath": null,
       "externalDocs": "https://docs.zkverify.io",
       "contractKey": "zkverifyAggregationProxy",
       "primaryMethod": "verifyProofAggregation",
-      "notes": "Verifier contract is deployed on both Horizen mainnet and testnet (different addresses — see zkverifyAggregationProxy contract entry). No Horizen docs page exists yet — referencePath and tutorialPath are null because documentation lags the deployment. Proof verification happens on zkVerify (a separate L1); Horizen contracts verify aggregation receipts via Merkle proof. Horizen mainnet domain ID: 3. Horizen testnet domain ID: 175. verifyProofAggregation takes 6 params: domainId, aggregationId, leaf, merklePath, leafCount, index. Storage mapping proofsAggregations(domainId, aggregationId) → bytes32 merkleRoot for existence checks. Terminology: zkVerify moved from 'attestation' to 'aggregation' — use current terms.",
+      "notes": "Verifier contract is deployed on both Horizen mainnet and testnet (different addresses \u2014 see zkverifyAggregationProxy contract entry). No Horizen docs page exists yet \u2014 referencePath and tutorialPath are null because documentation lags the deployment. Proof verification happens on zkVerify (a separate L1); Horizen contracts verify aggregation receipts via Merkle proof. Horizen mainnet domain ID: 3. Horizen testnet domain ID: 175. verifyProofAggregation takes 6 params: domainId, aggregationId, leaf, merklePath, leafCount, index. Storage mapping proofsAggregations(domainId, aggregationId) \u2192 bytes32 merkleRoot for existence checks. Terminology: zkVerify moved from 'attestation' to 'aggregation' \u2014 use current terms.",
       "source": "https://docs.zkverify.io/architecture/contract-addresses",
       "verified": "2026-08-05"
     }

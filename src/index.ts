@@ -15,18 +15,18 @@ import {
   integrationInputSchema,
   handleGetIntegrationInfo,
 } from "./tools/integrations.js";
-import { searchInputSchema, handleSearchDocs } from "./tools/search.js";
 import { storkPriceInputSchema, handleFetchStorkPrice } from "./tools/stork.js";
 import {
   zkVerifyStatusInputSchema,
   handleCheckZkVerifyStatus,
 } from "./tools/zkverify.js";
+import { tokenInputSchema, handleGetTokenInfo } from "./tools/tokens.js";
 
 const SERVER_INSTRUCTIONS = `Horizen chain reference data. All values include \`source\` and \`verified\` fields — surface them when reporting facts to the user. This server returns reference data only; it does not construct, sign, or broadcast transactions. Values not present in this server must not be inferred — query again with different parameters, or tell the user the value is unavailable. Some integrations are live on Horizen but not yet documented in Horizen's own docs. For these, referencePath and tutorialPath are null while status is "live". Report these as available-but-undocumented and direct the user to externalDocs. Never construct a docs.horizen.io URL that is not present in this registry.`;
 
 const server = new McpServer({
   name: "horizen-mcp",
-  version: "0.1.0",
+  version: "0.2.0",
 });
 
 server.tool(
@@ -90,16 +90,6 @@ server.tool(
 );
 
 server.tool(
-  "search_docs",
-  "Search the Horizen documentation at docs.horizen.io. Returns matching sections with titles, URLs, and excerpts.",
-  searchInputSchema.shape,
-  async (input) => {
-    const result = await handleSearchDocs(input as { query: string; limit: number });
-    return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
-  }
-);
-
-server.tool(
   "fetch_stork_price",
   "Perform an authenticated pull from the Stork REST API to get a live signed price update for an asset. Returns the full signed payload with each field annotated with its correct Solidity type (timestampNs as uint64 in nanoseconds; quantizedValue as int192 — not uint256). Use the solidityCallData field directly when constructing an updateTemporalNumericValueV1 call.",
   storkPriceInputSchema.shape,
@@ -127,6 +117,16 @@ server.tool(
         index?: string;
       }
     );
+    return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+  }
+);
+
+server.tool(
+  "get_token_info",
+  "Get token addresses and specs for tokens on Horizen: ZEN (governance, 18 decimals), cbBTC (Coinbase Bitcoin, 8 decimals — NOT 18), USDC.e (bridged USDC, 6 decimals). Returns Horizen address plus cross-chain addresses (Base, Base Sepolia). Omit token to list all tokens with their decimals.",
+  tokenInputSchema.shape,
+  async (input) => {
+    const result = handleGetTokenInfo(input as { token?: string; network?: "mainnet" | "testnet" });
     return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
   }
 );

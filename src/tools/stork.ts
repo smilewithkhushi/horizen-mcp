@@ -15,6 +15,10 @@ export const storkPriceInputSchema = z.object({
 // Source: https://docs.stork.network/api-reference/rest-api.md
 // Confirmed shape of stork_signed_price from the official REST API reference.
 // The signature and timestamp are nested inside timestamped_signature — NOT flat on the object.
+//
+// IMPORTANT: timestamp is typed as string (not number) because nanosecond timestamps
+// exceed float64's 15-16 significant digit limit. We pre-process the raw JSON text
+// before parsing to convert large integers to strings (see safeParse below).
 interface StorkSignedPrice {
   public_key: string;
   encoded_asset_id: string;
@@ -28,8 +32,8 @@ interface StorkSignedPrice {
   };
   // Confirmed nested structure from official REST API docs
   timestamped_signature: {
-    // UNIX nanosecond timestamp — uint64 on-chain
-    timestamp: number;
+    // UNIX nanosecond timestamp — uint64 on-chain; kept as string to preserve precision
+    timestamp: string;
     signature: {
       r: string;
       s: string;
@@ -81,10 +85,10 @@ export async function handleFetchStorkPrice(input: {
   const computedFeedId = keccak256(toBytes(input.assetId));
   const registryEntry = getFeed(input.assetId);
 
-  // Stork REST API uses HTTP Basic auth: apiKey as username, empty password.
-  // Source: https://docs.stork.network/api-reference/rest-api.md
-  const credentials = Buffer.from(`${input.apiKey}:`).toString("base64");
-  const authHeader = `Basic ${credentials}`;
+  // Stork REST API auth: pass the API key directly after "Basic ".
+  // Confirmed from working integration (price-triggered-escrow tutorial).
+  // Do NOT base64-encode — use the raw key as-is.
+  const authHeader = `Basic ${input.apiKey}`;
 
   let response: Response;
   try {
@@ -118,7 +122,13 @@ export async function handleFetchStorkPrice(input: {
 
   let body: StorkApiResponse;
   try {
-    body = (await response.json()) as StorkApiResponse;
+    // Read raw text first, then convert large integers (≥16 digits) to strings
+    // before JSON.parse. Nanosecond timestamps exceed float64's ~15 significant
+    // digit limit, so JSON.parse would silently round them and break signature
+    // verification on-chain.
+    const rawText = await response.text();
+    const safeText = rawText.replace(/:(\s*)(-?\d{16,})([,}\]])/g, `:$1"$2"$3`);
+    body = JSON.parse(safeText) as StorkApiResponse;
   } catch {
     return {
       success: false,
@@ -139,8 +149,7 @@ export async function handleFetchStorkPrice(input: {
 
   const sp = assetData.stork_signed_price;
 
-  // Timestamp lives at stork_signed_price.timestamped_signature.timestamp (UNIX nanoseconds).
-  // Use BigInt to avoid JS float64 precision loss — JSON.parse silently rounds uint64.
+  // Timestamp is already a string (preserved by safeParse above — no float64 rounding).
   const timestampNsBig = BigInt(sp.timestamped_signature.timestamp);
   const timestampSec = Number(timestampNsBig / 1_000_000_000n);
 
@@ -150,9 +159,11 @@ export async function handleFetchStorkPrice(input: {
     ? sp.encoded_asset_id.toLowerCase() === registryEntry.id.toLowerCase()
     : null;
 
-  // valueComputeAlgHash = calculation_alg.checksum from the API response.
-  // Maps to the valueComputeAlgHash bytes32 field in TemporalNumericValueInput.
-  const valueComputeAlgHash = sp.calculation_alg?.checksum ?? null;
+  // valueComputeAlgHash = calculation_alg.checksum — ensure 0x prefix
+  const rawChecksum = sp.calculation_alg?.checksum ?? null;
+  const valueComputeAlgHash = rawChecksum
+    ? rawChecksum.startsWith("0x") ? rawChecksum : `0x${rawChecksum}`
+    : null;
 
   // Signature fields are at stork_signed_price.timestamped_signature.signature.{r,s,v}.
   // v is returned as a string by the API ("27" or "28"); Number() converts to uint8 for ABI encoding.
@@ -184,7 +195,7 @@ export async function handleFetchStorkPrice(input: {
     // Timestamp — most common source of bugs
     timestamp: {
       // Raw nanosecond string (read from timestamped_signature.timestamp)
-      timestampNs: sp.timestamped_signature.timestamp.toString(),
+      timestampNs: sp.timestamped_signature.timestamp,
       timestampSec,
       iso: new Date(timestampSec * 1000).toISOString(),
       criticalNote:
@@ -221,7 +232,7 @@ export async function handleFetchStorkPrice(input: {
           structType: "StorkStructs.TemporalNumericValue",
           fields: {
             timestampNs: {
-              value: sp.timestamped_signature.timestamp.toString(),
+              value: sp.timestamped_signature.timestamp,
               solidityType: "uint64",
               source: "stork_signed_price.timestamped_signature.timestamp",
               criticalNote:
